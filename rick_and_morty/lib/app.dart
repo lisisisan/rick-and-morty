@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Clean App',
+      debugShowCheckedModeBanner: false,
       home: BlocBuilder<NavigationCubit, int>(
         builder: (context, state) {
           return Scaffold(
