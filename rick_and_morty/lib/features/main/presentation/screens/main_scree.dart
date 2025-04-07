@@ -52,7 +52,7 @@ class MainScreen extends StatelessWidget {
           return Center(child: Text(state.message));
         }
 
-        return const Center(child: Text('Нажмите, чтобы загрузить'));
+        return const Center(child: Text('Tap the button to load characters'));
       },
     );
   }

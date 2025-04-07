@@ -1,5 +1,5 @@
 class FavoritesPresenter {
   String getTitle() {
-    return 'Список избранных';
+    return 'List of favorites';
   }
 }

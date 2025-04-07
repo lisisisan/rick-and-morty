@@ -21,13 +21,10 @@ class MyApp extends StatelessWidget {
               currentIndex: state,
               onTap: (index) => context.read<NavigationCubit>().setTab(index),
               items: const [
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                  label: 'Главная',
-                ),
+                BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Main'),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.star),
-                  label: 'Избранное',
+                  label: 'Favorites',
                 ),
               ],
             ),

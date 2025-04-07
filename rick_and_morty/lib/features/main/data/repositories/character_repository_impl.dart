@@ -25,7 +25,7 @@ class CharacterRepositoryImpl implements CharacterRepository {
       final nextPageUrl = data['info']['next'] as String?;
       return (characters, nextPageUrl);
     } else {
-      throw Exception('Ошибка загрузки персонажей');
+      throw Exception('Error fetching characters: ${response.statusCode}');
     }
   }
 }
