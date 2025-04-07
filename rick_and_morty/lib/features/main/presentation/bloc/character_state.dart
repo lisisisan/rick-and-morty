@@ -11,14 +11,34 @@ class CharacterLoading extends CharacterState {}
 
 class CharacterLoaded extends CharacterState {
   final List<Character> characters;
-  CharacterLoaded(this.characters);
+  final String? nextPageUrl;
+  final bool isLoadingMore;
+
+  CharacterLoaded({
+    required this.characters,
+    required this.nextPageUrl,
+    this.isLoadingMore = false,
+  });
+
+  CharacterLoaded copyWith({
+    List<Character>? characters,
+    String? nextPageUrl,
+    bool? isLoadingMore,
+  }) {
+    return CharacterLoaded(
+      characters: characters ?? this.characters,
+      nextPageUrl: nextPageUrl ?? this.nextPageUrl,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+    );
+  }
 
   @override
-  List<Object?> get props => [characters];
+  List<Object?> get props => [characters, nextPageUrl, isLoadingMore];
 }
 
 class CharacterError extends CharacterState {
   final String message;
+
   CharacterError(this.message);
 
   @override

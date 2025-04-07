@@ -6,3 +6,5 @@ abstract class CharacterEvent extends Equatable {
 }
 
 class LoadCharacters extends CharacterEvent {}
+
+class LoadMoreCharacters extends CharacterEvent {}
