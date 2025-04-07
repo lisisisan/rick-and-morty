@@ -10,16 +10,20 @@ class CharacterRepositoryImpl implements CharacterRepository {
   CharacterRepositoryImpl(this.client);
 
   @override
-  Future<List<Character>> getCharacters() async {
-    final response = await client.get(
-      Uri.parse('https://rickandmortyapi.com/api/character'),
+  Future<(List<Character>, String?)> getCharacters({String? pageUrl}) async {
+    final uri = Uri.parse(
+      pageUrl ?? 'https://rickandmortyapi.com/api/character',
     );
+    final response = await client.get(uri);
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      return (data['results'] as List)
-          .map((e) => CharacterModel.fromJson(e))
-          .toList();
+      final characters =
+          (data['results'] as List)
+              .map((e) => CharacterModel.fromJson(e) as Character) // 👍
+              .toList();
+      final nextPageUrl = data['info']['next'] as String?;
+      return (characters, nextPageUrl);
     } else {
       throw Exception('Ошибка загрузки персонажей');
     }

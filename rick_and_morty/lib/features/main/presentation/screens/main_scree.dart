@@ -12,16 +12,33 @@ class MainScreen extends StatelessWidget {
         if (state is CharacterLoading) {
           return const Center(child: CircularProgressIndicator());
         } else if (state is CharacterLoaded) {
+          final scrollController = ScrollController();
+          scrollController.addListener(() {
+            if (scrollController.position.pixels >=
+                    scrollController.position.maxScrollExtent - 200 &&
+                !state.isLoadingMore &&
+                state.nextPageUrl != null) {
+              context.read<CharacterBloc>().add(LoadMoreCharacters());
+            }
+          });
+
           return ListView.builder(
-            itemCount: state.characters.length,
+            controller: scrollController,
+            itemCount: state.characters.length + (state.isLoadingMore ? 1 : 0),
             itemBuilder: (context, index) {
-              final character = state.characters[index];
-              return ListTile(
-                leading: Image.network(character.image),
-                title: Text(character.name),
-                subtitle: Text(character.status),
-                minVerticalPadding: 20,
-              );
+              if (index < state.characters.length) {
+                final character = state.characters[index];
+                return ListTile(
+                  leading: Image.network(character.image),
+                  title: Text(character.name),
+                  subtitle: Text(character.status),
+                );
+              } else {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
             },
           );
         } else if (state is CharacterError) {
