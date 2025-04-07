@@ -19,6 +19,8 @@ class MainScreen extends StatelessWidget {
               return ListTile(
                 leading: Image.network(character.image),
                 title: Text(character.name),
+                subtitle: Text(character.status),
+                minVerticalPadding: 20,
               );
             },
           );
