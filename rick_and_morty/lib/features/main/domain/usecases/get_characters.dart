@@ -6,5 +6,7 @@ class GetCharacters {
 
   GetCharacters(this.repository);
 
-  Future<List<Character>> call() => repository.getCharacters();
+  Future<(List<Character>, String?)> call({String? pageUrl}) {
+    return repository.getCharacters(pageUrl: pageUrl);
+  }
 }

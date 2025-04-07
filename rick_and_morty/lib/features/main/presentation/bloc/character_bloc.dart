@@ -10,14 +10,45 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
   final GetCharacters getCharacters;
 
   CharacterBloc(this.getCharacters) : super(CharacterInitial()) {
-    on<LoadCharacters>((event, emit) async {
-      emit(CharacterLoading());
+    on<LoadCharacters>(_onLoadCharacters);
+    on<LoadMoreCharacters>(_onLoadMoreCharacters);
+  }
+
+  Future<void> _onLoadCharacters(
+    LoadCharacters event,
+    Emitter<CharacterState> emit,
+  ) async {
+    emit(CharacterLoading());
+    try {
+      final (characters, nextPageUrl) = await getCharacters();
+      emit(CharacterLoaded(characters: characters, nextPageUrl: nextPageUrl));
+    } catch (e) {
+      emit(CharacterError(e.toString()));
+    }
+  }
+
+  Future<void> _onLoadMoreCharacters(
+    LoadMoreCharacters event,
+    Emitter<CharacterState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is CharacterLoaded &&
+        !currentState.isLoadingMore &&
+        currentState.nextPageUrl != null) {
+      emit(currentState.copyWith(isLoadingMore: true));
       try {
-        final characters = await getCharacters();
-        emit(CharacterLoaded(characters));
+        final (moreCharacters, nextPageUrl) = await getCharacters(
+          pageUrl: currentState.nextPageUrl,
+        );
+        emit(
+          CharacterLoaded(
+            characters: [...currentState.characters, ...moreCharacters],
+            nextPageUrl: nextPageUrl,
+          ),
+        );
       } catch (e) {
         emit(CharacterError(e.toString()));
       }
-    });
+    }
   }
 }
