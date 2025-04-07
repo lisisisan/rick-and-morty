@@ -32,6 +32,13 @@ class MainScreen extends StatelessWidget {
                   leading: Image.network(character.image),
                   title: Text(character.name),
                   subtitle: Text(character.status),
+                  trailing: IconButton(
+                    icon: const Icon(
+                      Icons.star_border_outlined,
+                      color: Colors.purple,
+                    ),
+                    onPressed: () {},
+                  ),
                 );
               } else {
                 return const Padding(

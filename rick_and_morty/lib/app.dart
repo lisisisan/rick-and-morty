@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
                   label: 'Главная',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.favorite_sharp),
+                  icon: Icon(Icons.star),
                   label: 'Избранное',
                 ),
               ],
