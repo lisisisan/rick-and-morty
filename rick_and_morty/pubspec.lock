@@ -436,7 +436,7 @@ packages:
     source: hosted
     version: "2.2.0"
   path:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path
       sha256: "75cca69d1490965be98c73ceaea117e8a04dd21217b37b292c9ddbec0d955bc5"
@@ -516,7 +516,7 @@ packages:
     source: hosted
     version: "1.5.1"
   provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: provider
       sha256: "489024f942069c2920c844ee18bb3d467c69e48955a4f32d1677f71be103e310"
