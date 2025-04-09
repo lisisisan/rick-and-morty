@@ -27,7 +27,7 @@ class FavoriteCharacterBloc
       await repository.addToFavorites(event.character);
       add(LoadFavoriteCharacters());
     } catch (e) {
-      emit(FavoriteCharacterError('Error adding to favorites ${e.toString()}'));
+      emit(FavoriteCharacterError('Error adding to favorites'));
     }
   }
 
@@ -39,9 +39,7 @@ class FavoriteCharacterBloc
       await repository.removeFromFavorites(event.characterId);
       add(LoadFavoriteCharacters());
     } catch (e) {
-      emit(
-        FavoriteCharacterError('Error removing from favorites ${e.toString()}'),
-      );
+      emit(FavoriteCharacterError('Error removing from favorites'));
     }
   }
 
@@ -53,8 +51,7 @@ class FavoriteCharacterBloc
       final favorites = await repository.getFavorites();
       emit(FavoriteCharacterLoaded(favorites));
     } catch (e) {
-      print('Error loading favorites ${e.toString()}');
-      emit(FavoriteCharacterError('Error loading favorites ${e.toString()}'));
+      emit(FavoriteCharacterError('Error loading favorites'));
     }
   }
 
