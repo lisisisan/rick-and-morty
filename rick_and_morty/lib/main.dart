@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
-import 'package:rick_and_morty/features/datasorce/database.dart';
+import 'package:rick_and_morty/features/main/data/datasorce/database.dart';
 import 'package:rick_and_morty/features/main/data/repositories/character_repository_impl.dart';
 import 'package:rick_and_morty/features/main/data/repositories/favorite_character_repository_impl.dart';
 import 'package:rick_and_morty/features/main/domain/usecases/get_characters.dart';

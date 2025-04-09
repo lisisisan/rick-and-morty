@@ -1,4 +1,4 @@
-import 'package:rick_and_morty/features/datasorce/database.dart';
+import 'package:rick_and_morty/features/main/data/datasorce/database.dart';
 import 'package:rick_and_morty/features/main/domain/repositories/favorite_character_repository.dart';
 
 import '../../domain/entities/character.dart';
