@@ -12,12 +12,12 @@ class FavoriteCharacterLoading extends FavoriteCharacterState {}
 class FavoriteCharacterLoaded extends FavoriteCharacterState {
   final List<FavoriteCharacter> favorites;
   final List<FavoriteCharacter> filteredFavorites;
-  final String selectedStatus;
+  final CharacterStatus selectedStatus;
 
   FavoriteCharacterLoaded(
     this.favorites, {
     List<FavoriteCharacter>? filtered,
-    this.selectedStatus = 'All',
+    this.selectedStatus = CharacterStatus.all,
   }) : filteredFavorites = filtered ?? favorites;
 
   @override

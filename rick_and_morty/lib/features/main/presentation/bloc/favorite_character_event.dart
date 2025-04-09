@@ -26,7 +26,7 @@ class RemoveCharacterFromFavorites extends FavoriteCharacterEvent {
 class LoadFavoriteCharacters extends FavoriteCharacterEvent {}
 
 class FilterFavoriteCharactersByStatus extends FavoriteCharacterEvent {
-  final String status; // 'Alive', 'Dead', 'unknown', или 'All'
+  final CharacterStatus status;
 
   FilterFavoriteCharactersByStatus(this.status);
 

@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_and_morty/features/main/data/datasorce/database.dart';
+import 'package:rick_and_morty/features/main/data/enum/character_status.dart';
 import 'package:rick_and_morty/features/main/data/repositories/favorite_character_repository_impl.dart';
 import 'package:rick_and_morty/features/main/domain/entities/character.dart';
 
@@ -62,15 +63,15 @@ class FavoriteCharacterBloc
   ) {
     final currentState = state;
     if (currentState is FavoriteCharacterLoaded) {
-      final status = event.status;
+      final selected = event.status;
       List<FavoriteCharacter> filtered = [];
 
-      if (status == 'All') {
+      if (selected == CharacterStatus.all) {
         filtered = currentState.favorites;
       } else {
         filtered =
             currentState.favorites
-                .where((character) => character.status == status)
+                .where((character) => character.status == selected.apiValue)
                 .toList();
       }
 
@@ -78,7 +79,7 @@ class FavoriteCharacterBloc
         FavoriteCharacterLoaded(
           currentState.favorites,
           filtered: filtered,
-          selectedStatus: status,
+          selectedStatus: selected,
         ),
       );
     }
