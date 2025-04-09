@@ -25,7 +25,7 @@ class MyAppState extends State<MyApp> {
       builder: (context, themeMode, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          themeMode: themeMode,
+          themeMode: ThemeMode.system,
           theme: ThemeData(
             primaryColor: const Color.fromARGB(255, 42, 183, 115),
             cardColor: Colors.white,
