@@ -9,6 +9,8 @@ part 'character_state.dart';
 class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
   final GetCharacters getCharacters;
 
+  final List<Character> _cache = [];
+
   CharacterBloc(this.getCharacters) : super(CharacterInitial()) {
     on<LoadCharacters>(_onLoadCharacters);
     on<LoadMoreCharacters>(_onLoadMoreCharacters);
@@ -20,8 +22,17 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
   ) async {
     emit(CharacterLoading());
     try {
+      if (_cache.isNotEmpty) {
+        emit(CharacterLoaded(characters: _cache, nextPageUrl: null));
+        return;
+      }
+
       final (characters, nextPageUrl) = await getCharacters();
-      emit(CharacterLoaded(characters: characters, nextPageUrl: nextPageUrl));
+
+      _cache.clear();
+      _cache.addAll(characters.take(100));
+
+      emit(CharacterLoaded(characters: _cache, nextPageUrl: nextPageUrl));
     } catch (e) {
       emit(CharacterError(e.toString()));
     }
@@ -40,12 +51,10 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
         final (moreCharacters, nextPageUrl) = await getCharacters(
           pageUrl: currentState.nextPageUrl,
         );
-        emit(
-          CharacterLoaded(
-            characters: [...currentState.characters, ...moreCharacters],
-            nextPageUrl: nextPageUrl,
-          ),
-        );
+
+        _cache.addAll(moreCharacters.take(100 - _cache.length));
+
+        emit(CharacterLoaded(characters: _cache, nextPageUrl: nextPageUrl));
       } catch (e) {
         emit(CharacterError(e.toString()));
       }
