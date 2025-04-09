@@ -25,7 +25,7 @@ class CharacterCard extends StatelessWidget {
       trailing: IconButton(
         icon: Icon(
           isFavorite ? Icons.star : Icons.star_border_outlined,
-          color: Colors.purple,
+          color: Theme.of(context).primaryColor,
         ),
         onPressed: () => onFavoritePressed(),
       ),

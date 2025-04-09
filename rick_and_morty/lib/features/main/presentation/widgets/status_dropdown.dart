@@ -14,7 +14,7 @@ class StatusDropdown extends StatelessWidget {
           return Container(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.purple),
+              border: Border.all(color: Theme.of(context).primaryColor),
               borderRadius: BorderRadius.circular(8),
             ),
             child: DropdownButtonHideUnderline(
@@ -26,12 +26,14 @@ class StatusDropdown extends StatelessWidget {
                         value: status,
                         child: Text(
                           status.label,
-                          style: const TextStyle(color: Colors.purple),
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                          ),
                         ),
                       );
                     }).toList(),
-                dropdownColor: Colors.white,
-                iconEnabledColor: Colors.purple,
+                dropdownColor: Theme.of(context).cardColor,
+                iconEnabledColor: Theme.of(context).primaryColor,
                 elevation: 0,
                 borderRadius: BorderRadius.circular(8),
                 onChanged: (status) {

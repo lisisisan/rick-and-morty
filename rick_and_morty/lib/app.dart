@@ -4,33 +4,76 @@ import 'package:rick_and_morty/core/navigation/navigation_cubit.dart';
 import 'package:rick_and_morty/features/main/presentation/screens/favorites_list_screen.dart';
 import 'package:rick_and_morty/features/main/presentation/screens/main_screen.dart';
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  MyAppState createState() => MyAppState();
+}
+
+class MyAppState extends State<MyApp> {
+  final ValueNotifier<ThemeMode> _themeNotifier = ValueNotifier(
+    ThemeMode.light,
+  );
 
   final List<Widget> _pages = const [MainScreen(), FavoritesListScreen()];
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: BlocBuilder<NavigationCubit, int>(
-        builder: (context, state) {
-          return Scaffold(
-            body: _pages[state],
-            bottomNavigationBar: BottomNavigationBar(
-              currentIndex: state,
-              onTap: (index) => context.read<NavigationCubit>().setTab(index),
-              items: const [
-                BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Main'),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.star),
-                  label: 'Favorites',
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: _themeNotifier,
+      builder: (context, themeMode, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          themeMode: themeMode,
+          theme: ThemeData(
+            primaryColor: const Color.fromARGB(255, 42, 183, 115),
+            cardColor: Colors.white,
+            brightness: Brightness.light,
+          ),
+          darkTheme: ThemeData(
+            primaryColor: Colors.greenAccent,
+            cardColor: Colors.black,
+            brightness: Brightness.dark,
+          ),
+          home: BlocBuilder<NavigationCubit, int>(
+            builder: (context, state) {
+              return Scaffold(
+                appBar: AppBar(
+                  title: Text('Rick and Morty'),
+                  actions: [
+                    Switch(
+                      activeColor: Theme.of(context).primaryColor,
+                      value: themeMode == ThemeMode.dark,
+                      onChanged: (value) {
+                        _themeNotifier.value =
+                            value ? ThemeMode.dark : ThemeMode.light;
+                      },
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          );
-        },
-      ),
+                body: _pages[state],
+                bottomNavigationBar: BottomNavigationBar(
+                  selectedItemColor: Theme.of(context).primaryColor,
+                  currentIndex: state,
+                  onTap:
+                      (index) => context.read<NavigationCubit>().setTab(index),
+                  items: const [
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.home),
+                      label: 'Main',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.star),
+                      label: 'Favorites',
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }
