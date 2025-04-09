@@ -16,7 +16,38 @@ class FavoritesListScreen extends StatelessWidget {
             context.read<FavoriteCharacterRepositoryImpl>(),
           )..add(LoadFavoriteCharacters()),
       child: Scaffold(
-        appBar: AppBar(title: const Text('Favorites')),
+        appBar: AppBar(
+          title: const Text('Favorites'),
+          actions: [
+            BlocBuilder<FavoriteCharacterBloc, FavoriteCharacterState>(
+              builder: (context, state) {
+                if (state is FavoriteCharacterLoaded) {
+                  return DropdownButton<String>(
+                    value: state.selectedStatus,
+                    items: const [
+                      DropdownMenuItem(value: 'All', child: Text('All')),
+                      DropdownMenuItem(value: 'Alive', child: Text('Alive')),
+                      DropdownMenuItem(value: 'Dead', child: Text('Dead')),
+                      DropdownMenuItem(
+                        value: 'unknown',
+                        child: Text('Unknown'),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        context.read<FavoriteCharacterBloc>().add(
+                          FilterFavoriteCharactersByStatus(value),
+                        );
+                      }
+                    },
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+          ],
+        ),
+
         body: BlocBuilder<FavoriteCharacterBloc, FavoriteCharacterState>(
           builder: (context, state) {
             if (state is FavoriteCharacterLoading) {
@@ -26,9 +57,9 @@ class FavoritesListScreen extends StatelessWidget {
                 return const Center(child: Text('No favorites yet'));
               }
               return ListView.builder(
-                itemCount: state.favorites.length,
+                itemCount: state.filteredFavorites.length,
                 itemBuilder: (context, index) {
-                  final character = state.favorites[index];
+                  final character = state.filteredFavorites[index];
                   return CharacterCard(
                     character: character.toCharacter(),
                     isFavorite: true,

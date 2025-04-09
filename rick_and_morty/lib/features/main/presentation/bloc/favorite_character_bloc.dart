@@ -15,6 +15,7 @@ class FavoriteCharacterBloc
     on<AddCharacterToFavorites>(_onAddCharacterToFavorites);
     on<RemoveCharacterFromFavorites>(_onRemoveCharacterFromFavorites);
     on<LoadFavoriteCharacters>(_onLoadFavoriteCharacters);
+    on<FilterFavoriteCharactersByStatus>(_onFilterByStatus);
   }
 
   Future<void> _onAddCharacterToFavorites(
@@ -52,6 +53,34 @@ class FavoriteCharacterBloc
       emit(FavoriteCharacterLoaded(favorites));
     } catch (e) {
       emit(FavoriteCharacterError('Error loading favorites ${e.toString()}'));
+    }
+  }
+
+  void _onFilterByStatus(
+    FilterFavoriteCharactersByStatus event,
+    Emitter<FavoriteCharacterState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is FavoriteCharacterLoaded) {
+      final status = event.status;
+      List<FavoriteCharacter> filtered = [];
+
+      if (status == 'All') {
+        filtered = currentState.favorites;
+      } else {
+        filtered =
+            currentState.favorites
+                .where((character) => character.status == status)
+                .toList();
+      }
+
+      emit(
+        FavoriteCharacterLoaded(
+          currentState.favorites,
+          filtered: filtered,
+          selectedStatus: status,
+        ),
+      );
     }
   }
 }
