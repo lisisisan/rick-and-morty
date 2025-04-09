@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_and_morty/features/main/data/datasorce/database.dart';
+import 'package:rick_and_morty/features/main/presentation/animations/favorite_portal_animation.dart';
 import 'package:rick_and_morty/features/main/presentation/bloc/character_bloc.dart';
 import 'package:rick_and_morty/features/main/presentation/bloc/favorite_character_bloc.dart';
 import 'package:rick_and_morty/features/main/presentation/widgets/character_card.dart';
@@ -57,18 +58,46 @@ class MainScreen extends StatelessWidget {
                         (fav) => fav.id == character.id,
                       );
 
+                      final favoriteIconKey = GlobalKey();
                       return CharacterCard(
                         character: character,
                         isFavorite: isFavorite,
+                        favoriteIconKey: favoriteIconKey,
                         onFavoritePressed: () {
-                          if (isFavorite) {
-                            context.read<FavoriteCharacterBloc>().add(
-                              RemoveCharacterFromFavorites(character.id),
+                          final currentContext = favoriteIconKey.currentContext;
+                          if (currentContext != null) {
+                            final renderBox =
+                                currentContext.findRenderObject() as RenderBox;
+                            final size = renderBox.size;
+                            final tapPosition = renderBox.localToGlobal(
+                              Offset(size.width * 0.88, size.height / 2),
                             );
-                          } else {
-                            context.read<FavoriteCharacterBloc>().add(
-                              AddCharacterToFavorites(character),
-                            );
+
+                            if (isFavorite) {
+                              context.read<FavoriteCharacterBloc>().add(
+                                RemoveCharacterFromFavorites(character.id),
+                              );
+                            } else {
+                              context.read<FavoriteCharacterBloc>().add(
+                                AddCharacterToFavorites(character),
+                              );
+
+                              final overlay = Overlay.of(
+                                context,
+                                rootOverlay: true,
+                              );
+                              late OverlayEntry entry;
+
+                              entry = OverlayEntry(
+                                builder:
+                                    (_) => FavoritePortalAnimation(
+                                      tapPosition: tapPosition,
+                                      onComplete: () => entry.remove(),
+                                    ),
+                              );
+
+                              overlay.insert(entry);
+                            }
                           }
                         },
                       );
