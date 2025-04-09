@@ -53,6 +53,7 @@ class FavoriteCharacterBloc
       final favorites = await repository.getFavorites();
       emit(FavoriteCharacterLoaded(favorites));
     } catch (e) {
+      print('Error loading favorites ${e.toString()}');
       emit(FavoriteCharacterError('Error loading favorites ${e.toString()}'));
     }
   }
