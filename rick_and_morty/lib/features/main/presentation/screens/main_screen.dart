@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_and_morty/features/main/data/datasorce/database.dart';
 import 'package:rick_and_morty/features/main/presentation/bloc/character_bloc.dart';
 import 'package:rick_and_morty/features/main/presentation/bloc/favorite_character_bloc.dart';
+import 'package:rick_and_morty/features/main/presentation/widgets/character_card.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -56,29 +57,20 @@ class MainScreen extends StatelessWidget {
                         (fav) => fav.id == character.id,
                       );
 
-                      return ListTile(
-                        leading: Image.network(character.image),
-                        title: Text(character.name),
-                        subtitle: Text(character.status),
-                        trailing: IconButton(
-                          icon: Icon(
-                            isFavorite
-                                ? Icons.star
-                                : Icons.star_border_outlined,
-                            color: Colors.purple,
-                          ),
-                          onPressed: () {
-                            if (isFavorite) {
-                              context.read<FavoriteCharacterBloc>().add(
-                                RemoveCharacterFromFavorites(character.id),
-                              );
-                            } else {
-                              context.read<FavoriteCharacterBloc>().add(
-                                AddCharacterToFavorites(character),
-                              );
-                            }
-                          },
-                        ),
+                      return CharacterCard(
+                        character: character,
+                        isFavorite: isFavorite,
+                        onFavoritePressed: () {
+                          if (isFavorite) {
+                            context.read<FavoriteCharacterBloc>().add(
+                              RemoveCharacterFromFavorites(character.id),
+                            );
+                          } else {
+                            context.read<FavoriteCharacterBloc>().add(
+                              AddCharacterToFavorites(character),
+                            );
+                          }
+                        },
                       );
                     } else {
                       return const Padding(
