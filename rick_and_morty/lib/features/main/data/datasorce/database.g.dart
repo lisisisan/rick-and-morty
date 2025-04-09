@@ -51,18 +51,26 @@ class $FavoriteCharactersTable extends FavoriteCharacters
   late final GeneratedColumn<String> species = GeneratedColumn<String>(
     'species',
     aliasedName,
-    true,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 255,
+    ),
     type: DriftSqlType.string,
-    requiredDuringInsert: false,
+    requiredDuringInsert: true,
   );
   static const VerificationMeta _statusMeta = const VerificationMeta('status');
   @override
   late final GeneratedColumn<String> status = GeneratedColumn<String>(
     'status',
     aliasedName,
-    true,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 255,
+    ),
     type: DriftSqlType.string,
-    requiredDuringInsert: false,
+    requiredDuringInsert: true,
   );
   @override
   List<GeneratedColumn> get $columns => [id, name, image, species, status];
@@ -100,12 +108,16 @@ class $FavoriteCharactersTable extends FavoriteCharacters
         _speciesMeta,
         species.isAcceptableOrUnknown(data['species']!, _speciesMeta),
       );
+    } else if (isInserting) {
+      context.missing(_speciesMeta);
     }
     if (data.containsKey('status')) {
       context.handle(
         _statusMeta,
         status.isAcceptableOrUnknown(data['status']!, _statusMeta),
       );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
     }
     return context;
   }
@@ -130,14 +142,16 @@ class $FavoriteCharactersTable extends FavoriteCharacters
         DriftSqlType.string,
         data['${effectivePrefix}image'],
       ),
-      species: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}species'],
-      ),
-      status: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}status'],
-      ),
+      species:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}species'],
+          )!,
+      status:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}status'],
+          )!,
     );
   }
 
@@ -152,14 +166,14 @@ class FavoriteCharacter extends DataClass
   final int id;
   final String name;
   final String? image;
-  final String? species;
-  final String? status;
+  final String species;
+  final String status;
   const FavoriteCharacter({
     required this.id,
     required this.name,
     this.image,
-    this.species,
-    this.status,
+    required this.species,
+    required this.status,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -169,12 +183,8 @@ class FavoriteCharacter extends DataClass
     if (!nullToAbsent || image != null) {
       map['image'] = Variable<String>(image);
     }
-    if (!nullToAbsent || species != null) {
-      map['species'] = Variable<String>(species);
-    }
-    if (!nullToAbsent || status != null) {
-      map['status'] = Variable<String>(status);
-    }
+    map['species'] = Variable<String>(species);
+    map['status'] = Variable<String>(status);
     return map;
   }
 
@@ -184,12 +194,8 @@ class FavoriteCharacter extends DataClass
       name: Value(name),
       image:
           image == null && nullToAbsent ? const Value.absent() : Value(image),
-      species:
-          species == null && nullToAbsent
-              ? const Value.absent()
-              : Value(species),
-      status:
-          status == null && nullToAbsent ? const Value.absent() : Value(status),
+      species: Value(species),
+      status: Value(status),
     );
   }
 
@@ -202,8 +208,8 @@ class FavoriteCharacter extends DataClass
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       image: serializer.fromJson<String?>(json['image']),
-      species: serializer.fromJson<String?>(json['species']),
-      status: serializer.fromJson<String?>(json['status']),
+      species: serializer.fromJson<String>(json['species']),
+      status: serializer.fromJson<String>(json['status']),
     );
   }
   @override
@@ -213,8 +219,8 @@ class FavoriteCharacter extends DataClass
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'image': serializer.toJson<String?>(image),
-      'species': serializer.toJson<String?>(species),
-      'status': serializer.toJson<String?>(status),
+      'species': serializer.toJson<String>(species),
+      'status': serializer.toJson<String>(status),
     };
   }
 
@@ -222,14 +228,14 @@ class FavoriteCharacter extends DataClass
     int? id,
     String? name,
     Value<String?> image = const Value.absent(),
-    Value<String?> species = const Value.absent(),
-    Value<String?> status = const Value.absent(),
+    String? species,
+    String? status,
   }) => FavoriteCharacter(
     id: id ?? this.id,
     name: name ?? this.name,
     image: image.present ? image.value : this.image,
-    species: species.present ? species.value : this.species,
-    status: status.present ? status.value : this.status,
+    species: species ?? this.species,
+    status: status ?? this.status,
   );
   FavoriteCharacter copyWithCompanion(FavoriteCharactersCompanion data) {
     return FavoriteCharacter(
@@ -270,8 +276,8 @@ class FavoriteCharactersCompanion extends UpdateCompanion<FavoriteCharacter> {
   final Value<int> id;
   final Value<String> name;
   final Value<String?> image;
-  final Value<String?> species;
-  final Value<String?> status;
+  final Value<String> species;
+  final Value<String> status;
   const FavoriteCharactersCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -283,9 +289,11 @@ class FavoriteCharactersCompanion extends UpdateCompanion<FavoriteCharacter> {
     this.id = const Value.absent(),
     required String name,
     this.image = const Value.absent(),
-    this.species = const Value.absent(),
-    this.status = const Value.absent(),
-  }) : name = Value(name);
+    required String species,
+    required String status,
+  }) : name = Value(name),
+       species = Value(species),
+       status = Value(status);
   static Insertable<FavoriteCharacter> custom({
     Expression<int>? id,
     Expression<String>? name,
@@ -306,8 +314,8 @@ class FavoriteCharactersCompanion extends UpdateCompanion<FavoriteCharacter> {
     Value<int>? id,
     Value<String>? name,
     Value<String?>? image,
-    Value<String?>? species,
-    Value<String?>? status,
+    Value<String>? species,
+    Value<String>? status,
   }) {
     return FavoriteCharactersCompanion(
       id: id ?? this.id,
@@ -369,16 +377,16 @@ typedef $$FavoriteCharactersTableCreateCompanionBuilder =
       Value<int> id,
       required String name,
       Value<String?> image,
-      Value<String?> species,
-      Value<String?> status,
+      required String species,
+      required String status,
     });
 typedef $$FavoriteCharactersTableUpdateCompanionBuilder =
     FavoriteCharactersCompanion Function({
       Value<int> id,
       Value<String> name,
       Value<String?> image,
-      Value<String?> species,
-      Value<String?> status,
+      Value<String> species,
+      Value<String> status,
     });
 
 class $$FavoriteCharactersTableFilterComposer
@@ -525,8 +533,8 @@ class $$FavoriteCharactersTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<String?> image = const Value.absent(),
-                Value<String?> species = const Value.absent(),
-                Value<String?> status = const Value.absent(),
+                Value<String> species = const Value.absent(),
+                Value<String> status = const Value.absent(),
               }) => FavoriteCharactersCompanion(
                 id: id,
                 name: name,
@@ -539,8 +547,8 @@ class $$FavoriteCharactersTableTableManager
                 Value<int> id = const Value.absent(),
                 required String name,
                 Value<String?> image = const Value.absent(),
-                Value<String?> species = const Value.absent(),
-                Value<String?> status = const Value.absent(),
+                required String species,
+                required String status,
               }) => FavoriteCharactersCompanion.insert(
                 id: id,
                 name: name,

@@ -5,6 +5,7 @@ class CharacterModel extends Character {
     required super.id,
     required super.name,
     required super.image,
+    required super.species,
     required super.status,
   });
 
@@ -13,6 +14,7 @@ class CharacterModel extends Character {
       id: json['id'],
       name: json['name'],
       image: json['image'],
+      species: json['species'],
       status: json['status'],
     );
   }

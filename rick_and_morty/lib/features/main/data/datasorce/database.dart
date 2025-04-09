@@ -11,8 +11,8 @@ class FavoriteCharacters extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get name => text().withLength(min: 1, max: 255)();
   TextColumn get image => text().nullable()();
-  TextColumn get species => text().nullable()();
-  TextColumn get status => text().nullable()();
+  TextColumn get species => text().withLength(min: 1, max: 255)();
+  TextColumn get status => text().withLength(min: 1, max: 255)();
 }
 
 @DriftDatabase(tables: [FavoriteCharacters])

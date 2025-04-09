@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rick_and_morty/features/main/data/mappers/favorite_character_mapper.dart';
 import 'package:rick_and_morty/features/main/data/repositories/favorite_character_repository_impl.dart';
 import 'package:rick_and_morty/features/main/presentation/bloc/favorite_character_bloc.dart';
+import 'package:rick_and_morty/features/main/presentation/widgets/character_card.dart';
 
 class FavoritesListScreen extends StatelessWidget {
   const FavoritesListScreen({super.key});
@@ -27,15 +29,14 @@ class FavoritesListScreen extends StatelessWidget {
                 itemCount: state.favorites.length,
                 itemBuilder: (context, index) {
                   final character = state.favorites[index];
-                  return ListTile(
-                    leading:
-                        character.image != null
-                            ? Image.network(character.image!)
-                            : null,
-                    title: Text(character.name),
-                    subtitle: Text(
-                      '${character.species ?? ''} • ${character.status ?? ''}',
-                    ),
+                  return CharacterCard(
+                    character: character.toCharacter(),
+                    isFavorite: true,
+                    onFavoritePressed: () {
+                      context.read<FavoriteCharacterBloc>().add(
+                        RemoveCharacterFromFavorites(character.id),
+                      );
+                    },
                   );
                 },
               );
