@@ -13,10 +13,16 @@ class MyApp extends StatefulWidget {
 
 class MyAppState extends State<MyApp> {
   final ValueNotifier<ThemeMode> _themeNotifier = ValueNotifier(
-    ThemeMode.light,
+    ThemeMode.system,
   );
 
   final List<Widget> _pages = const [MainScreen(), FavoritesListScreen()];
+
+  @override
+  void dispose() {
+    _themeNotifier.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +31,6 @@ class MyAppState extends State<MyApp> {
       builder: (context, themeMode, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          themeMode: ThemeMode.system,
           theme: ThemeData(
             primaryColor: const Color.fromARGB(255, 42, 183, 115),
             cardColor: Colors.white,
