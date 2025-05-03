@@ -20,7 +20,7 @@ class CharacterRepositoryImpl implements CharacterRepository {
       final data = json.decode(response.body);
       final characters =
           (data['results'] as List)
-              .map((e) => CharacterModel.fromJson(e) as Character) // 👍
+              .map((e) => CharacterModel.fromJson(e) as Character)
               .toList();
       final nextPageUrl = data['info']['next'] as String?;
       return (characters, nextPageUrl);
